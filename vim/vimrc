@@ -1,6 +1,5 @@
 set runtimepath+=/opt/vim/bundle
-let s:taskRuntimePath = $LAMBDA_TASK_ROOT . "/vim"
-set runtimepath+=s:taskRuntimePath
+execute 'set rtp+=' . expand($LAMBDA_TASK_ROOT . "/vim/bundle")
 
 function! LambdaHandler()
   let V = vital#lambda_vim_layer#new()
