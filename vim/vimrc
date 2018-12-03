@@ -4,6 +4,7 @@ execute 'set rtp+=' . expand($LAMBDA_TASK_ROOT . "/vim/bundle")
 function! LambdaHandler()
   let V = vital#lambda_vim_layer#new()
   let HTTP = V.import('Web.HTTP')
+  let JSON = V.import('Web.JSON')
   let handlerInfo = split($_HANDLER, '\.')
   let handlerFile = $LAMBDA_TASK_ROOT . "/" . handlerInfo[0] . ".vim"
   let handlerMethod = handlerInfo[1]
@@ -12,9 +13,10 @@ function! LambdaHandler()
   endif
   while 1
     let nextEvent = HTTP.get("http://".$AWS_LAMBDA_RUNTIME_API."/2018-06-01/runtime/invocation/next")
+    let eventData = JSON.decode(nextEvent.content)
     let eventHeader = HTTP.parseHeader(nextEvent.header)
     let requestId = eventHeader['Lambda-Runtime-Aws-Request-Id']
-    let result = function(handlerMethod)()
+    let result = function(handlerMethod)(eventData)
     call HTTP.post("http://".$AWS_LAMBDA_RUNTIME_API."/2018-06-01/runtime/invocation/".requestId."/response", result)
   endwhile
 endfunction
