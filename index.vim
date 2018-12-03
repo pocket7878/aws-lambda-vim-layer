@@ -1,3 +1,3 @@
-function! Handler()
+function! Method()
   return "Hello, Vim"
 endfunction
