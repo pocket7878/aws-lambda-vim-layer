@@ -26,3 +26,7 @@ function! Method()
   return "Hello, Vim"
 endfunction
 ```
+
+### Bundle
+
+boostrap script automatically add `$LAMBDA_TASK_ROOT/vim/bundle` to `runtimepath`
