@@ -21,10 +21,10 @@ will make `lambda-vim-layer.zip`.
 If you set handler as `handler.Method`, you have to write code into `handler.vim` file and 
 it must have `Method` function.
 
-bootstrap will call `Method` with event payload.
+bootstrap will call `Method` with event and context.
 
 ```handler.vim
-function! Method(eventData)
+function! Method(eventData, context)
   return a:eventData.message
 endfunction
 ```
