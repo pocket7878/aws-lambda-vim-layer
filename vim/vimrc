@@ -1,13 +1,20 @@
 set runtimepath+=/var/task/vim/bundle/lambda_vim_layer
 
 function! LambdaHandler()
-  let s:V = vital#lambda_vim_layer#new()
-  let s:HTTP = s:V.import('Web.HTTP')
+  let V = vital#lambda_vim_layer#new()
+  let HTTP = V.import('Web.HTTP')
+  let handlerInfo = split($_HANDLER, '\.')
+  let handlerFile = $LAMBDA_TASK_ROOT . "/" . handlerInfo[0] . ".vim"
+  let handlerMethod = handlerInfo[1]
+  if filereadable(expand(handlerFile))
+    execute 'source ' . fnameescape(handlerFile)
+  endif
   while 1
-    let nextEvent = s:HTTP.get("http://".$AWS_LAMBDA_RUNTIME_API."/2018-06-01/runtime/invocation/next")
-    let eventHeader = s:HTTP.parseHeader(nextEvent.header)
+    let nextEvent = HTTP.get("http://".$AWS_LAMBDA_RUNTIME_API."/2018-06-01/runtime/invocation/next")
+    let eventHeader = HTTP.parseHeader(nextEvent.header)
     let requestId = eventHeader['Lambda-Runtime-Aws-Request-Id']
-    call s:HTTP.post("http://".$AWS_LAMBDA_RUNTIME_API."/2018-06-01/runtime/invocation/".requestId."/response", "Hello,FromVim")
+    let result = function(handlerMethod)()
+    call HTTP.post("http://".$AWS_LAMBDA_RUNTIME_API."/2018-06-01/runtime/invocation/".requestId."/response", result)
   endwhile
 endfunction
 
