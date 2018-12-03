@@ -2,4 +2,4 @@
 
 set -euo pipefail
 
-bin/vim -u vim/vimrc
+vim -u /opt/vim/vimrc

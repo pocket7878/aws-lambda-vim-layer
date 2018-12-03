@@ -1,5 +1,5 @@
 bin/
-lambda-layer-vim*.zip
+lambda-vim-layer.zip
 lib/
 event.json
 template.yml

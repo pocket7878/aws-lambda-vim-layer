@@ -1,4 +1,4 @@
-set runtimepath+=/var/task/vim/bundle/lambda_vim_layer
+set runtimepath+=/opt/vim/bundle
 let s:taskRuntimePath = $LAMBDA_TASK_ROOT . "/vim"
 set runtimepath+=s:taskRuntimePath
 
