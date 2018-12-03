@@ -1,3 +1,7 @@
+if &compatible
+  set nocompatible
+endif
+
 execute 'set rtp+=' . expand('<sfile>:p:h') . '/bundle'
 execute 'set rtp+=' . expand($LAMBDA_TASK_ROOT . "/vim/bundle")
 
@@ -15,17 +19,18 @@ function! LambdaHandler()
     let nextEvent = HTTP.get("http://".$AWS_LAMBDA_RUNTIME_API."/2018-06-01/runtime/invocation/next")
     let eventData = JSON.decode(nextEvent.content)
     let eventHeader = HTTP.parseHeader(nextEvent.header)
-    let eventContext = {}
-    eventContext.memoryLimitInMb = $AWS_LAMBDA_FUNCTION_MEMORY_SIZE
-    eventContext.functionName = $AWS_LAMBDA_FUNCTION_NAME
-    eventContext.functionVersion = $AWS_LAMBDA_FUNCTION_VERSION
-    eventContext.invokedFunctionArm = eventHeader['Lambda-Runtime-Invoked-Function-Arn']
-    eventContext.xrayTraceId = eventHeader['Lambda-Runtime-Trace-Id']
-    eventContext.awsRequestId = eventHeader['Lambda-Runtime-Aws-Request-Id']
-    eventContext.logStreamName = $AWS_LAMBDA_LOG_STREAM_NAME
-    eventContext.logGroupName = $AWS_LAMBDA_LOG_GROUP_NAME
-    eventContext.clientContext = JSON.decode(eventHeader['Lambda-Runtime-Client-Context'])
-    eventContext.identity = JSON.decode(eventHeader['Lambda-Runtime-Cognito-Identity'])
+    let eventContext = {
+          \'memoryLimitInMb' : $AWS_LAMBDA_FUNCTION_MEMORY_SIZE,
+          \'functionName' : $AWS_LAMBDA_FUNCTION_NAME,
+          \'functionVersion' : $AWS_LAMBDA_FUNCTION_VERSION,
+          \'invokedFunctionArm' : eventHeader['Lambda-Runtime-Invoked-Function-Arn'],
+          \'xrayTraceId' : eventHeader['Lambda-Runtime-Trace-Id'],
+          \'awsRequestId' : eventHeader['Lambda-Runtime-Aws-Request-Id'],
+          \'logStreamName' : $AWS_LAMBDA_LOG_STREAM_NAME,
+          \'logGroupName' : $AWS_LAMBDA_LOG_GROUP_NAME,
+          \'clientContext' : JSON.decode(get(eventHeader, 'Lambda-Runtime-Client-Context', '{}')),
+          \'identity' : JSON.decode(get(eventHeader, 'Lambda-Runtime-Cognito-Identity', '{}')),
+          \}
     let requestId = eventHeader['Lambda-Runtime-Aws-Request-Id']
     let result = function(handlerMethod)(eventData, eventContext)
     call HTTP.post("http://".$AWS_LAMBDA_RUNTIME_API."/2018-06-01/runtime/invocation/".requestId."/response", result)
