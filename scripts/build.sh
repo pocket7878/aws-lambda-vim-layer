@@ -18,4 +18,4 @@ done
 
 chmod 755 'bootstrap'
 
-zip -r "${BASE_DIR}/lambda-vim-layer.zip" .
+zip -r "${BASE_DIR}/lambda-vim-layer.zip" . -x *.git* *.DS_Store* *template.yml*
