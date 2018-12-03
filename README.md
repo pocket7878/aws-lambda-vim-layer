@@ -29,6 +29,23 @@ function! Method(eventData, context)
 endfunction
 ```
 
+#### Context
+
+```
+let eventContext = {
+  \'memoryLimitInMb' : $AWS_LAMBDA_FUNCTION_MEMORY_SIZE,
+  \'functionName' : $AWS_LAMBDA_FUNCTION_NAME,
+  \'functionVersion' : $AWS_LAMBDA_FUNCTION_VERSION,
+  \'invokedFunctionArm' : eventHeader['Lambda-Runtime-Invoked-Function-Arn'],
+  \'xrayTraceId' : eventHeader['Lambda-Runtime-Trace-Id'],
+  \'awsRequestId' : eventHeader['Lambda-Runtime-Aws-Request-Id'],
+  \'logStreamName' : $AWS_LAMBDA_LOG_STREAM_NAME,
+  \'logGroupName' : $AWS_LAMBDA_LOG_GROUP_NAME,
+  \'clientContext' : JSON.decode(get(eventHeader, 'Lambda-Runtime-Client-Context', '{}')),
+  \'identity' : JSON.decode(get(eventHeader, 'Lambda-Runtime-Cognito-Identity', '{}')),
+  \}
+```
+
 ### Bundle
 
 boostrap script automatically add `$LAMBDA_TASK_ROOT/vim/bundle` to `runtimepath`
