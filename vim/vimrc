@@ -1,4 +1,4 @@
-set runtimepath+=/opt/vim/bundle
+execute 'set rtp+=' . expand('<sfile>:p:h') . '/bundle'
 execute 'set rtp+=' . expand($LAMBDA_TASK_ROOT . "/vim/bundle")
 
 function! LambdaHandler()
