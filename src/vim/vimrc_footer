@@ -1,7 +1,3 @@
-if &compatible
-  set nocompatible
-endif
-
 execute 'set rtp+=' . expand('<sfile>:p:h') . '/bundle'
 execute 'set rtp+=' . expand($LAMBDA_TASK_ROOT . "/vim/bundle")
 

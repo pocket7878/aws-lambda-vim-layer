@@ -3,8 +3,11 @@
 ROOT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
 build: 
-	docker run --rm -v $(ROOT_DIR):/tmp/layer lambci/lambda:build-nodejs8.10 /tmp/layer/scripts/build.sh
+	rm -rf dst
+	docker run -t --rm -v $(ROOT_DIR):/tmp/layer lambci/lambda:build-nodejs8.10 /tmp/layer/src/scripts/build.sh
 
+dive:
+	docker run -it --rm -v $(ROOT_DIR):/tmp/layer lambci/lambda:build-nodejs8.10 bash
 
 upload: 
 	./upload.sh

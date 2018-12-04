@@ -1,6 +1,5 @@
-bin/
 lambda-vim-layer.zip
-lib/
 event.json
 template.yml
 docker-compose.yml
+dst/
