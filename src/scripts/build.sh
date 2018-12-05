@@ -32,14 +32,15 @@ cat ${SRC_DIR}/vim/vimrc_header > ${VIMRC_PATH}
 
 # Copy Vim runtimes
 mkdir -p ${DST_DIR}/vim/runtime
-VIMRUNTIMEPATH=`vim -e -T dumb --cmd 'exe "set t_cm=\<C-M>"|echo &runtimepath|quit' | tr -d '\015' `
+VIM_VIMRUNTIME=`vim -e -T dumb --cmd 'exe "set t_cm=\<C-M>"|echo $VIMRUNTIME|quit' | tr -d '\015' `
+VIM_RUNTIMEPATH=`vim -e -T dumb --cmd 'exe "set t_cm=\<C-M>"|echo &runtimepath|quit' | tr -d '\015' `
 export IFS=","
-for path in ${VIMRUNTIMEPATH}; do
+for path in ${VIM_RUNTIMEPATH}; do
   if [ -d "$path" ]; then
     not_conflict=true
     m=512
     prefix=""
-    for p in ${VIMRUNTIMEPATH}; do
+    for p in ${VIM_RUNTIMEPATH}; do
       if [[ "$p" != "$path" && "$path" == $p* ]]; then
         not_conflict=false
         if [ ${#p} -lt $m ]; then
@@ -56,6 +57,10 @@ for path in ${VIMRUNTIMEPATH}; do
       translate_path=$(echo $path | sed "s,^${prefix},,g")
       runtime_path="/runtime/$(basename $prefix)${translate_path}"
       echo "execute 'set rtp+=' . expand('<sfile>:p:h') . '${runtime_path}'" >> ${VIMRC_PATH}
+    fi
+    
+    if [ $path == $VIM_VIMRUNTIME ]; then
+      echo "let \$VIMRUNTIME = expand('<sfile>:p:h') . '${runtime_path}'" >> ${VIMRC_PATH}
     fi
   fi
 done
